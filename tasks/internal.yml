@@ -1,0 +1,22 @@
+---
+- name: Install HAproxy
+  apt: name=haproxy state=present
+
+- name: Delete previouse haproxy configuration file.
+  file:
+    path: "{{ ha_config_path }}"
+    state: absent
+
+- name: Copy HAproxy configuration.
+  template:
+    src: templates/haproxy.cfg.j2
+    dest: "{{ ha_config_path }}"
+    group: root
+    owner: root
+    mode: 0644
+
+- name: Ensure haproxy are started and will start at the boot.
+  service:
+    name: haproxy.service
+    state: restarted
+    enabled: yes

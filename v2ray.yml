@@ -1,0 +1,18 @@
+---
+- hosts: all
+  become: yes
+
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Update chach.
+      apt: update_cache=yes cache_valid_time=3600
+
+    - name: v2ray installation and configuration on external machine.
+      import_tasks: tasks/external.yml
+      when: inventory_hostname in groups['external']
+
+    - name: Install and config haproxy on internal server.
+      import_tasks: tasks/internal.yml
+      when: inventory_hostname in groups['internal']

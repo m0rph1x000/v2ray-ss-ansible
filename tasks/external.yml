@@ -1,0 +1,36 @@
+---
+- name: Install docker and other dependencies.
+  apt:
+    name:
+      - docker
+      - docker.io
+      - containerd
+    state: present
+
+- name: Copy Dockerfile to the external destination.
+  template:
+    src: templates/Dockerfile.j2
+    dest: /opt/Dockerfile
+    group: root
+    owner: root
+    mode: 066
+
+- name: Build the Dockerfile.
+  docker_image:
+    name: ss-proxy
+    source: build
+    build:
+      path: /opt/
+    state: present
+
+- name: Run shadowsocks.
+  docker_container:
+    image: ss-proxy
+    name: ss-proxy
+    restart_policy: always
+    interactive: yes
+    ports:
+      - "{{ external_node_port }}:{{ external_node_port }}"
+    env:
+      SERVER_PORT: "{{ external_node_port }}"
+      #PASSWORD: "{{ ss_password }}"
