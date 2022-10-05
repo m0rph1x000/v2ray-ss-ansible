@@ -1,8 +1,8 @@
 ---
-external_node_domain: "192.168.56.21" # or IP
+external_node_domain: "ss.example.com" # or IP
 external_node_port: "443"
 container_name: "ss-proxy"
-ss_password: ""
+ss_password: "" # by default is fuckthisshit
 
 ha_config_path: "/etc/haproxy/haproxy.cfg"
 internal_node_port: "443"
